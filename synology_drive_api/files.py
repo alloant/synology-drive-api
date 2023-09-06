@@ -76,12 +76,55 @@ class FilesMixin:
         """
         endpoint = 'entry.cgi'
         distpath, distname = os.path.split(dist)
+
+        ext = os.path.splitext(distname)[1]
+
+        if ext in ['.odoc','.osheet','.oslides']:
+            return self.copy_office(source,dist)
+        else:
+            return self.copy_drive(source,dist)
+
+    def copy_office(self, source: str, dist: str) -> dict:
+        """
+        copy file or dir
+        :param source : id:23333333333  or "'team-folders/folder2/'"
+        :param dist: "'team-folders/folder2/temp.odoc'"
+        """
+        if source.isdigit():
+            source = f"id:{source}"
+        else:
+            source = f"/{source}" if not source.startswith('/') else source
+
+        endpoint = 'entry.cgi'
+        distpath, distname = os.path.split(dist)
         api_name = "SYNO.Office.Node"
         params = {'api': api_name, 'version': 2, 'method': 'copy',
                   'to_parent_folder': distpath, 'dry_run': 'true', 'name': distname,
                   'title': distname[:distname.index('.')],
                   'files': f'["{source}"]'}
         return self.session.http_put(endpoint, params=params)
+    
+    def copy_drive(self, source: str, dist: str) -> dict:
+        """
+        copy file or dir
+        :param source : id:23333333333  or "'team-folders/folder2/'"
+        :param dist: "'team-folders/folder2/temp.odoc'"
+        """
+        if source.isdigit():
+            source = f"id:{source}"
+        else:
+            source = f"/{source}" if not source.startswith('/') else source
+        
+        api_name = "SYNO.SynologyDrive.Files"
+        endpoint = 'entry.cgi'
+        distpath, distname = os.path.split(dist)
+        params = {'api': api_name, 'version': 2, 'method': 'copy',
+                  'to_parent_folder': distpath, 'to_parent_name': distname,
+                  'conflict_action': 'autorename', 
+                  'files': f'["{source}"]'}
+        return self.session.http_put(endpoint, params=params)
+
+
 
     def list_folder(self, dir_path: str) -> dict:
         """
