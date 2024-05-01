@@ -202,6 +202,7 @@ class FilesMixin:
         """
         ret = self.get_file_or_folder_info(file_path)
         file_name = ret['data']['name']
+
         if Path(file_name).suffix in ['.osheet', 'odoc']:
             bio_ret_with_name = self.download_synology_office_file(file_path)
         else:
@@ -342,8 +343,9 @@ class FilesMixin:
         else:
             ready_for_move_paths = f"/{ready_for_move_paths}" if not ready_for_move_paths.startswith(
                 '/') else ready_for_move_paths
-            ret = self.get_file_or_folder_info(ready_for_move_paths)
-            ready_for_move_paths = [f"id:{ret['data']['file_id']}"]
+            #ret = self.get_file_or_folder_info(ready_for_move_paths)
+            #ready_for_move_paths = [f"id:{ret['data']['file_id']}"]
+            ready_for_move_paths = ready_for_move_paths if isinstance(ready_for_move_paths,list) else [ready_for_move_paths]
 
         # ret = self.get_file_or_folder_info(dest_path)
         api_name = 'SYNO.SynologyDrive.Files'
@@ -363,10 +365,11 @@ class FilesMixin:
         :param dest_path: file/folder or file/folder id "552146100935505098"
         :return:
         """
-        ret = self.get_file_or_folder_info(dest_path)
+        #ret = self.get_file_or_folder_info(dest_path)
+        dest_path = dest_path if isinstance(dest_path,list) else [dest_path]
         api_name = 'SYNO.SynologyDrive.Files'
         endpoint = 'entry.cgi'
-        data = {'api': api_name, 'method': 'delete', 'version': 2, 'files': [f"id:{ret['data']['file_id']}"],
-                'permanent': 'false', 'revisions': ret['data']['revisions']}
+        data = {'api': api_name, 'method': 'delete', 'version': 2, 'files': dest_path,
+                'permanent': 'false', 'revisions': 2}
         urlencoded_data = form_urlencoded(data)
         return self.session.http_post(endpoint, data=urlencoded_data)
