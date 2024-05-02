@@ -200,8 +200,9 @@ class FilesMixin:
         :param file_path:
         :return:
         """
-        ret = self.get_file_or_folder_info(file_path)
-        file_name = ret['data']['name']
+        #ret = self.get_file_or_folder_info(file_path)
+        #file_name = ret['data']['name']
+        file_name = file_path.split('/')[-1]
 
         if Path(file_name).suffix in ['.osheet', 'odoc']:
             bio_ret_with_name = self.download_synology_office_file(file_path)
@@ -293,14 +294,15 @@ class FilesMixin:
         if not file_path.isdigit() and '.' not in file_path:
             raise Exception('file_path should be id or path with file extension, extensions are osheet or odoc')
 
-        ret = self.get_file_or_folder_info(file_path)
-        file_name = ret['data']['name']
+        #ret = self.get_file_or_folder_info(file_path)
+        #file_name = ret['data']['name']
+        file_name = file_path.split('/')[-1]
         export_end_point = file_name.replace('osheet', 'xlsx').replace('odoc', 'docx')
-        file_id = ret['data']['file_id']
+        #file_id = ret['data']['file_id']
 
         api_name = 'SYNO.Office.Export'
         endpoint = f"entry.cgi/{export_end_point}"
-        params = {'api': api_name, 'method': 'download', 'version': 1, 'path': f"id:{file_id}"}
+        params = {'api': api_name, 'method': 'download', 'version': 1, 'path': f"{file_path}"}
         bio_ret = self.session.http_get(endpoint, params=params, bio=True)
         bio_ret_with_name = io.BytesIO(bio_ret)
         bio_ret_with_name.name = export_end_point
