@@ -76,10 +76,9 @@ class FilesMixin:
         """
         endpoint = 'entry.cgi'
         distpath, distname = os.path.split(dist)
+        ext = os.path.splitext(distname)[-1]
 
-        ext = os.path.splitext(distname)[1]
-
-        if ext in ['.odoc','.osheet','.oslides']:
+        if ext in ['.odoc','.osheet','.oslides'] and False:
             return self.copy_office(source,dist)
         else:
             return self.copy_drive(source,dist)
@@ -100,7 +99,7 @@ class FilesMixin:
         api_name = "SYNO.Office.Node"
         params = {'api': api_name, 'version': 2, 'method': 'copy',
                   'to_parent_folder': distpath, 'dry_run': 'true', 'name': distname,
-                  'title': distname[:distname.index('.')],
+                  'title': distname[:distname.rfind('.')],
                   'files': f'["{source}"]'}
         return self.session.http_put(endpoint, params=params)
     
