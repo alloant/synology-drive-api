@@ -206,11 +206,11 @@ class FilesMixin:
         if Path(file_name).suffix in ['.osheet', 'odoc']:
             bio_ret_with_name = self.download_synology_office_file(file_path)
         else:
-            file_id = ret['data']['file_id']
+            #file_id = ret['data']['file_id']
             api_name = 'SYNO.SynologyDrive.Files'
             endpoint = f'entry.cgi/{file_name}'
             # \42: "
-            params = {'api': api_name, 'method': 'download', 'version': 2, 'files': f"[\42id:{file_id}\42]",
+            params = {'api': api_name, 'method': 'download', 'version': 2, 'files': f"[{file_path}]",
                       'force_download': True, 'json_error': True, '_dc': str(time() * 1000)[:13]}
             bio_ret = self.session.http_get(endpoint, params=params, bio=True)
             bio_ret_with_name = io.BytesIO(bio_ret)
