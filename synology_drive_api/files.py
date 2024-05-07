@@ -98,7 +98,7 @@ class FilesMixin:
         distpath, distname = os.path.split(dist)
         api_name = "SYNO.Office.Node"
         params = {'api': api_name, 'version': 2, 'method': 'copy',
-                  'to_parent_folder': distpath, 'dry_run': 'true', 'name': distname,
+                  'to_parent_folder': distpath, 'dry_run': 'true', 'name': distname, 'comment': 'false',
                   'title': distname[:distname.rfind('.')],
                   'files': f'["{source}"]'}
         return self.session.http_put(endpoint, params=params)
@@ -118,7 +118,7 @@ class FilesMixin:
         endpoint = 'entry.cgi'
         distpath, distname = os.path.split(dist)
         params = {'api': api_name, 'version': 2, 'method': 'copy',
-                  'to_parent_folder': distpath, 'to_parent_name': distname,
+                  'to_parent_folder': distpath, 'to_parent_name': distname, 'comment': 'false',
                   'conflict_action': 'autorename', 
                   'files': f'["{source}"]'}
         return self.session.http_put(endpoint, params=params)
