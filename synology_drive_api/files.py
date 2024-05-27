@@ -51,14 +51,17 @@ class FilesMixin:
             rst = self.session.http_post(endpoint, data=urlencoded_data)
             share_path = f"id:{rst['data']['file_id']}"
 
-
         api_name = 'SYNO.SynologyDrive.AdvanceSharing'
         endpoint = 'entry.cgi'
-        params = {'api': api_name, 'version': 1, 'method': 'get', "path": share_path}
-        rst = self.session.http_put(endpoint, params=params)
+        params = {'api': api_name, 'version': 1, 'method': 'get_link', "path": share_path}
+        try:
+            rst = self.session.http_put(endpoint, params=params)
+        except:
+            params['method'] = 'create'
+            params['role'] = role
+            rst = self.session.http_put(endpoint, params=params)
         
         api_name = 'SYNO.SynologyDrive.Sharing'
-        #role = 'editor' if rst['data']['role'] == 'viewer' else 'viewer'
         if role == 'editor':
             params2 = {'api': api_name, 'version': 1, 'method': 'update', "path": f"id:{rst['data']['permanent_id']}", 'permissions':"[{\42action\42:\42update\42,\42member\42:{\42type\42:\42internal\42},\42role\42:\42editor\42}]"}
         else:            
