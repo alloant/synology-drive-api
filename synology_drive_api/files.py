@@ -35,7 +35,7 @@ class FilesMixin:
         return {folder_info['name']: folder_info['file_id'] for folder_info in resp['data']['items']}
 
 
-    def toggle_share_permissions(self, share_path: str):
+    def toggle_share_permissions(self, share_path: str, role):
         """
         TODO share file more detail params
         :param share_path: id:23333333333  or "'team-folders/folder2/'"
@@ -58,7 +58,7 @@ class FilesMixin:
         rst = self.session.http_put(endpoint, params=params)
         
         api_name = 'SYNO.SynologyDrive.Sharing'
-        role = 'editor' if rst['data']['role'] == 'viewer' else 'viewer'
+        #role = 'editor' if rst['data']['role'] == 'viewer' else 'viewer'
         if role == 'editor':
             params2 = {'api': api_name, 'version': 1, 'method': 'update', "path": f"id:{rst['data']['permanent_id']}", 'permissions':"[{\42action\42:\42update\42,\42member\42:{\42type\42:\42internal\42},\42role\42:\42editor\42}]"}
         else:            
