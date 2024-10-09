@@ -97,7 +97,7 @@ class FilesMixin:
             path_params = f"id:{file_or_folder_path}"
         else:
             # add start position /
-            path_params = f"/{file_or_folder_path}" if not file_or_folder_path.startswith('/') else file_or_folder_path
+            path_params = f"/{file_or_folder_path}" if not file_or_folder_path.startswith('/') and not file_or_folder_path.startswith('link') else file_or_folder_path
         data = {'api': api_name, 'method': 'create_link', 'version': 1, 'path': path_params}
         urlencoded_data = form_urlencoded(data)
         return self.session.http_post(endpoint, data=urlencoded_data)
@@ -126,7 +126,7 @@ class FilesMixin:
         if source.isdigit():
             source = f"id:{source}"
         else:
-            source = f"/{source}" if not source.startswith('/') else source
+            source = f"/{source}" if not source.startswith('/') and not source.startswith('link') else source
 
         endpoint = 'entry.cgi'
         distpath, distname = os.path.split(dist)
@@ -146,7 +146,7 @@ class FilesMixin:
         if source.isdigit():
             source = f"id:{source}"
         else:
-            source = f"/{source}" if not source.startswith('/') else source
+            source = f"/{source}" if not source.startswith('/') and not source.startswith('link') else source
         
         api_name = "SYNO.SynologyDrive.Files"
         endpoint = 'entry.cgi'
@@ -168,7 +168,7 @@ class FilesMixin:
             dest_path = f"id:{dir_path}"
         else:
             # add start position /
-            dest_path = f"/{dir_path}" if not dir_path.startswith('/') else dir_path
+            dest_path = f"/{dir_path}" if not dir_path.startswith('/') and not dir_path.startswith('link') else dir_path
 
         api_name = 'SYNO.SynologyDrive.Files'
         endpoint = 'entry.cgi'
@@ -199,7 +199,7 @@ class FilesMixin:
             path_params = f"id:{file_or_folder_path}"
         else:
             # add start position /
-            path_params = f"/{file_or_folder_path}" if not file_or_folder_path.startswith('/') else file_or_folder_path
+            path_params = f"/{file_or_folder_path}" if not file_or_folder_path.startswith('/') and not file_or_folder_path.startswith('link') else file_or_folder_path
 
         api_name = 'SYNO.SynologyDrive.Files'
         endpoint = 'entry.cgi'
@@ -376,13 +376,12 @@ class FilesMixin:
             dest_path = f"id:{dest_folder}"
         else:
             # add start position /
-            dest_path = f"/{dest_folder}" if not dest_folder.startswith('/') else dest_folder
+            dest_path = f"/{dest_folder}" if not dest_folder.startswith('/') and not dest_folder.startswith('link') else dest_folder
 
         if ready_for_move_paths.isdigit():
             ready_for_move_paths = [f"id:{ready_for_move_paths}"]
         else:
-            ready_for_move_paths = f"/{ready_for_move_paths}" if not ready_for_move_paths.startswith(
-                '/') else ready_for_move_paths
+            ready_for_move_paths = f"/{ready_for_move_paths}" if not ready_for_move_paths.startswith('/') and not ready_for_move_paths.startswith('link') else ready_for_move_paths
             #ret = self.get_file_or_folder_info(ready_for_move_paths)
             #ready_for_move_paths = [f"id:{ret['data']['file_id']}"]
             ready_for_move_paths = ready_for_move_paths if isinstance(ready_for_move_paths,list) else [ready_for_move_paths]
